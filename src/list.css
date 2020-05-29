@@ -6,6 +6,7 @@
     background:cyan;
     overflow: scroll;
     border: 2px solid black;
+    /* border-top: 0; */
 }
 
 p {
