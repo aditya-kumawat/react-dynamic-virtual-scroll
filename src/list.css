@@ -1,0 +1,27 @@
+.List {
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+    width: 400px;
+    background:cyan;
+    overflow: scroll;
+    border: 2px solid black;
+}
+
+p {
+    margin: 0;
+    padding: 0;
+}
+
+.List-item {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    margin: 0;
+    padding: 5px;
+}
+
+.List-topPadding, .List-bottomPadding {
+    flex-shrink: 0;
+}
