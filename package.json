@@ -2,6 +2,7 @@
   "name": "virtual-scroll",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://aditya-kumawat.github.io/virtual-scroll/",
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
@@ -12,7 +13,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && mv build/ docs",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
