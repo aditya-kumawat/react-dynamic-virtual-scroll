@@ -6,11 +6,26 @@ class List extends React.Component {
         super(props);
         this.listRef = React.createRef();
         this.state = {
-            scrollTop: 0,
             offset: 0,
-            length: 20,
-            inView: 15,
-            avgRowHeight: 40
+            length: 30,
+            avgRowHeight: 40,
+        }
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.offset > this.state.offset && this.state.offset > 0) {
+            const el = this.listRef.current;
+            const items = el.querySelectorAll(".List-item");
+            const diff = prevState.offset - this.state.offset;
+            let height = 0;
+
+            for (let i = 0; i < diff && i < items.length; i++) {
+                height += items[i].clientHeight;
+            }
+            const newAvgHeight = ((this.state.avgRowHeight * prevState.offset) - (height)) / this.state.offset;
+            this.setState({
+                avgRowHeight: newAvgHeight,
+            });
         }
     }
 
@@ -23,19 +38,18 @@ class List extends React.Component {
 
         return (
             <>
-                {data.slice(offset, offset + length).map((d, index) => {
+                {renderedData.map((d, index) => {
                     const rI = offset + index;
                     return (
                         <div
                             className="List-item"
                             key={rI}
                             style={{
-                                height: rI % 2 === 1 ? `${40}px` : `${40 +20}px`,
+                                height: rI % 2 === 1 ? `${40}px` : `${40 + (rI % 5) * 20}px`,
                                 background: rI % 2 === 1 ? 'white' : '#d5d5d5'
                             }}
                         >
-                            {/* <p>{d.firstName}</p> */}
-                            <p>List item:- {rI}</p>
+                            <p>{d}</p>
                         </div>
                     )
                 })}
@@ -43,7 +57,7 @@ class List extends React.Component {
         )
     }
 
-    onScrollHandler({ target: { scrollTop } }) {
+    onScrollHandler() {
         if (this.listRef.current) {
             const {
                 data,
@@ -55,14 +69,10 @@ class List extends React.Component {
             } = this.state;
 
             const el = this.listRef.current;
-            const topPaddingEl = el.querySelector(".List-topPadding");
-            const bottomPaddingEl = el.querySelector(".List-bottomPadding");
+            const { scrollTop } = el;
             const items = el.querySelectorAll(".List-item");
-            const firstItem = el.querySelector(".List-item");
 
-            console.log(avgRowHeight);
-
-            const newScroll = scrollTop - (offset * avgRowHeight);
+            const newScroll = Math.floor(scrollTop - (offset * avgRowHeight));
             let inView = 0;
             let currScroll = 0;
             let i = 0;
@@ -75,53 +85,38 @@ class List extends React.Component {
             this.setState({
                 inView
             })
-            if (newScroll >= 0) {
+
+            if (newScroll > 0) {
                 let currScroll = newScroll;
                 let newOffset = offset;
                 let newAvgHeight = avgRowHeight;
                 let i = 0;
-                while (currScroll > items[i].clientHeight) {
+                while (i < items.length && currScroll >= items[i].clientHeight) {
                     const rowHeight = items[i].clientHeight;
                     currScroll -= rowHeight;
-                    newAvgHeight = Math.floor(((newOffset * newAvgHeight) + (rowHeight)) / (newOffset + 1));
+                    newAvgHeight = ((newOffset * newAvgHeight) + (rowHeight)) / (newOffset + 1);
                     newOffset++;
                     i++;
                 }
-                this.setState({
-                    offset: newOffset,
-                    avgRowHeight: newAvgHeight
-                })
-                // if (newScroll > firstItem.clientHeight) {
-                //     this.setState({
-                //         offset: offset + 1,
-                //         avgRowHeight: Math.floor(((offset * avgRowHeight) + (firstItem.clientHeight)) / (offset + 1))
-                //     })
-                // }
+
+                newOffset = newOffset < data.length - inView ? newOffset : data.length - inView - 1;
+                if (newOffset > offset) {
+                    this.setState({
+                        offset: newOffset,
+                        avgRowHeight: newAvgHeight,
+                    })
+                }
             } else {
-                const diff = Math.floor(newScroll / avgRowHeight);
-                const newOffset = offset + (diff > -1 ? -1 : diff);
-                this.setState({
-                    offset: newOffset < 0 ? 0 : newOffset,
-                })
+                if (avgRowHeight) {
+                    const diff = Math.floor(newScroll / avgRowHeight) || -1;
+                    const newOffset = offset + diff;
+                    if (newOffset < offset) {
+                        this.setState({
+                            offset: newOffset < 0 ? 0 : newOffset,
+                        })
+                    }
+                }
             }
-
-
-            // console.log(scrollTop, firstItem.clientHeight);
-            // if (scrollTop - firstItem.clientHeight >= 0) {
-
-            //     this.setState({
-            //         scrollTop,
-            //         offset: this.state.offset+1,
-            //         inView: 15
-            //     });
-            // }
-            // const offset = Math.floor(scrollTop / avgRowHeight);
-            // const inView = Math.floor(el.clientHeight / avgRowHeight);
-            // console.log(offset, inView);
-            // this.setState({
-            //     offset: offset < data.length - inView + 1 ? offset : this.state.offset,
-            //     inView: inView
-            // });
         }
 
     }
@@ -129,17 +124,14 @@ class List extends React.Component {
     render() {
         const {
             data,
-            avgRowHeight = 40
         } = this.props;
 
         const {
-            scrollTop,
             offset,
             inView,
-            length
+            length,
+            avgRowHeight
         } = this.state;
-
-        // console.log(data.length, inView, offset, length);
 
         return (
             <div ref={this.listRef} className="List" onScroll={this.onScrollHandler.bind(this)}>
@@ -147,14 +139,13 @@ class List extends React.Component {
                     className="List-topPadding"
                     style={{
                         height: `${offset * avgRowHeight}px`
-                        // height: `${offset * avgRowHeight}px`
                     }}
                 />
                 {this.renderListItems(offset, length)}
                 <div
                     className="List-bottomPadding"
                     style={{
-                        height: `${(data.length - inView - offset) * avgRowHeight}px`
+                        height: `${(data.length - inView - offset - 1) * avgRowHeight}px`
                     }}
                 />
             </div>

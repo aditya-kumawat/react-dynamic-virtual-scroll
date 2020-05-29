@@ -1,9 +1,6 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import data from './data';
-
-import List from './List'
+import List from './List';
+const data = Array.from({ length: 100 }, (_, index) => `List Item:- ${index}`);
 
 function App() {
   return (
