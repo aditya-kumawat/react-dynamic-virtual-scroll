@@ -35,7 +35,7 @@ class VirtualScroll extends React.Component {
     const offsetDiff = prevState.offset - this.state.offset;
     if (this.listRef) {
       const el = this.listRef;
-      const items = el.querySelectorAll(".List-item");
+      const items = el.querySelectorAll(".VS-item");
 
       let heightAdded = 0;
       let currOffset = prevState.offset;
@@ -92,7 +92,7 @@ class VirtualScroll extends React.Component {
 
       if (direction === 0) return;
 
-      const items = el.querySelectorAll(".List-item");
+      const items = el.querySelectorAll(".VS-item");
       let newOffset = offset;
       let newAvgRowHeight = avgRowHeight;
       const start = Math.min(offset, buffer);
@@ -143,11 +143,30 @@ class VirtualScroll extends React.Component {
     if (this.props.onScroll) this.props.onScroll(event);
   }
 
+  renderItems(start, end) {
+    const {
+      renderItem
+    } = this.props;
+
+    return Array.from({ length: end - start + 1 }, (_, index) => {
+      const rowIndex = start + index;
+      const component = renderItem(rowIndex);
+      return React.cloneElement(
+        component,
+        {
+          key: rowIndex,
+          className: ["VS-item", component.props.className].join(' ').trim()
+        }
+      );
+    })
+  }
+
   render() {
     const {
       totalLength,
       length,
       buffer,
+      offset: _offset,
       renderItems,
       minItemHeight,
       ...rest
@@ -185,7 +204,7 @@ class VirtualScroll extends React.Component {
                 height: topPadding
               }}
             />
-            {renderItems(start, end)}
+            {this.renderItems(start, end)}
             <div
               style={{
                 flexShrink: 0,

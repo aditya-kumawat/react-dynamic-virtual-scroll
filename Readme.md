@@ -27,18 +27,12 @@ No external dependencies so no need to worry about security and package size.
       className="List"
       minItemHeight={40}
       totalLength={100}
-      renderItems={(start, end) => {
-          return Array.from({ length: end - start + 1 }, (_, index) => {
-            const rowIndex = start + index;
-            return (
-              <div
-                key={rowIndex}
-                className="List-item"
-              >
-                <h3>List item: {rowIndex}</h3>
-              </div>
-            );
-          })
+      renderItem={(rowIndex) => {
+          return (
+            <div className="List-item">
+              <h3>List item: {rowIndex}</h3>
+            </div>
+          );
       }}
   />
   ```
@@ -49,7 +43,7 @@ No external dependencies so no need to worry about security and package size.
 | ------------- | ------------------------------- | -------- | ------- | ------------------------------------------------------------ |
 | minItemHeight | number                          | true     |         | Minimum item height to calculate the placeholder spacing.    |
 | totalLength   | number                          | true     |         | Total number of items to be rendered.                        |
-| renderItems   | (start, end) => React.ReactNode | true     |         | Callback to render items for specified index values. Both 'start' and 'end' are inclusive. |
+| renderItem    | (rowIndex) => React.ReactNode   | true     |         | Callback to render items for specified index values. **0-indexed** |
 | length        | number                          |          | 30      | Total number of items to be rendered in the dom.             |
 | buffer        | number                          |          | 10      | Total number of items to be rendered in the dom before and after your required dom items. |
 
