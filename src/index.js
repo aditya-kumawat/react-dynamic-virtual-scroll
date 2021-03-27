@@ -169,6 +169,7 @@ class VirtualScroll extends React.Component {
       offset: _offset,
       renderItems,
       minItemHeight,
+      forwardRef,
       ...rest
     } = this.props;
 
@@ -192,6 +193,7 @@ class VirtualScroll extends React.Component {
         {...rest}
         ref={(el) => {
           this.listRef = el;
+          forwardRef.current = el;
           if (!init) this.setState({ init: true });
         }}
         onScroll={this.onScrollHandler.bind(this)}
@@ -218,4 +220,4 @@ class VirtualScroll extends React.Component {
   }
 }
 
-export default VirtualScroll;
+export default React.forwardRef((props, ref) => <VirtualScroll forwardRef={ref} {...props} />);
