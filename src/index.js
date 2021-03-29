@@ -193,7 +193,7 @@ class VirtualScroll extends React.Component {
         {...rest}
         ref={(el) => {
           this.listRef = el;
-          forwardRef.current = el;
+          if(forwardRef) forwardRef.current = el;
           if (!init) this.setState({ init: true });
         }}
         onScroll={this.onScrollHandler.bind(this)}
