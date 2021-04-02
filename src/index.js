@@ -21,8 +21,10 @@ class VirtualScroll extends React.Component {
 
   componentDidMount() {
     window.requestAnimationFrame(() => {
-      this.listRef.scrollTop = this.state.offset * this.avgRowHeight;
-    })
+      if (this.listRef) {
+        this.listRef.scrollTop = this.state.offset * this.avgRowHeight;
+      }
+    });
   }
 
   componentDidUpdate(_prevProps, prevState) {
@@ -193,7 +195,7 @@ class VirtualScroll extends React.Component {
         {...rest}
         ref={(el) => {
           this.listRef = el;
-          if(forwardRef) forwardRef.current = el;
+          if (forwardRef) forwardRef.current = el;
           if (!init) this.setState({ init: true });
         }}
         onScroll={this.onScrollHandler.bind(this)}
