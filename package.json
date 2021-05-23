@@ -35,7 +35,7 @@
     "lazy-loading"
   ],
   "author": "Aditya Kumawat",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/aditya-kumawat/react-dynamic-virtual-scroll/issues"
   },
