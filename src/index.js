@@ -222,4 +222,4 @@ class VirtualScroll extends React.Component {
   }
 }
 
-export default React.forwardRef((props, ref) => <VirtualScroll forwardRef={ref} {...props} />);
+export default React.forwardRef((props, ref) => <VirtualScroll key={props.totalLength} forwardRef={ref} {...props} />);
