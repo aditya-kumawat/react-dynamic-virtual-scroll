@@ -168,10 +168,10 @@ class VirtualScroll extends React.Component {
       totalLength,
       length,
       buffer,
-      offset: _offset,
-      renderItems,
       minItemHeight,
       forwardRef,
+      offset: _offset,
+      renderItem: _renderItem,
       ...rest
     } = this.props;
 
